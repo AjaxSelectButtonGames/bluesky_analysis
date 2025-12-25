@@ -1,8 +1,8 @@
 import json, time, uuid
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from db import conn, cursor
-from analysis import analyze_handle
+from .db import conn, cursor
+from .analysis import analyze_handle
 
 app = FastAPI()
 
