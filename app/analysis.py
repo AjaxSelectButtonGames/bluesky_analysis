@@ -24,7 +24,7 @@ def resolve_handle_to_did(handle: str) -> str:
 
     # 2️⃣ Resolve via Bluesky
     resp = requests.get(
-        f"{BSKY_API}/xrpc/app.bsky.actor.resolveHandle",
+        f"{BSKY_API}/xrpc/com.atproto.identity.resolveHandle",
         params={"handle": handle},
         timeout=10
     )
