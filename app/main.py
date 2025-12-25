@@ -5,24 +5,28 @@ from .db import conn, cursor
 from .analysis import analyze_handle
 
 app = FastAPI()
-
 EXPIRY_HOURS = 24
+
 
 class AnalyzeRequest(BaseModel):
     handle: str
     requested_by: str | None = None
 
-@app.post("/analyze")
+
+@app.post("/api/analyze")
 def analyze(req: AnalyzeRequest):
+    try:
+        data = analyze_handle(req.handle)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
     report_id = uuid.uuid4().hex
     now = int(time.time() * 1000)
     expires = now + EXPIRY_HOURS * 3600 * 1000
 
-    data = analyze_handle(req.handle)
-
     cursor.execute(
         "INSERT INTO reports VALUES (?, ?, ?, ?, ?)",
-        (report_id, req.handle, json.dumps(data), now, expires)
+        (report_id, data["handle"], json.dumps(data), now, expires)
     )
     conn.commit()
 
